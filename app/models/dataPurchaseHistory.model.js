@@ -1,14 +1,20 @@
 module.exports = (sequelize, DataTypes) => {
     const DataPurchaseHistory = sequelize.define("dataPurchaseHistoies", {
-      type: {
+      categoryId: {
         type: DataTypes.STRING
       },
-      title: {
+      dataname: {
         type: DataTypes.STRING
       },
-      date: {
-        type: DataTypes.DATEONLY
-      }
+      username: {
+        type: DataTypes.STRING
+      },
+      userId: {
+        type: DataTypes.INTEGER
+      },
+      dataId: {
+        type: DataTypes.INTEGER
+      },
     });
   
     return DataPurchaseHistory;

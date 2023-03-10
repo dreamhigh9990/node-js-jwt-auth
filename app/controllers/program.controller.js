@@ -153,6 +153,7 @@ exports.createProgram =async (req, res) => {
       date: req.body.date,
       purchases: req.body.purchases,
       recommends: req.body.recommends,
+      unrecommends: req.body.unrecommends,
       file_url: req.dateNow + req.file.originalname,
       image_url:req.body.image_url,
       cost: req.body.cost
@@ -229,6 +230,7 @@ exports.updateProgram = (req, res) => {
       date: req.body.date,
       purchases: req.body.purchases,
       recommends: req.body.recommends,
+      unrecommends: req.body.unrecommends,
       file_url: req.dateNow + req.file.originalname,
       image_url:req.body.image_url,
       cost: req.body.cost
@@ -252,3 +254,30 @@ exports.deleteProgram = async (req, res) => {
   }
 };
 
+//ProgramUpVote
+exports.programUpVote = (req, res) => {
+  Program.update(
+    {
+      recommends: req.body.recommends,
+    }, {
+    where: {
+      id: req.params.id
+    },
+  }).then(result => {
+    res.status(200).send(result);
+  });
+};
+
+//ProgramDownVote
+exports.ProgramDownVote = (req, res) => {
+  Program.update(
+    {
+      unrecommends: req.body.unrecommends,
+    }, {
+    where: {
+      id: req.params.id
+    },
+  }).then(result => {
+    res.status(200).send(result);
+  });
+};

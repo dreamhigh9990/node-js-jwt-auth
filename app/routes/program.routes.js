@@ -98,4 +98,14 @@ module.exports = function (app) {
         "/api/program/delete/:id",
         controller.deleteProgram
     );
+
+    app.put(
+        "/api/program/programupvote/:id",
+        controller.programUpVote
+      );
+      
+      app.put(
+        "/api/program/programdownvote/:id",
+        controller.ProgramDownVote
+      );
 };

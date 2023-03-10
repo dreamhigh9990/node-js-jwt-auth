@@ -1,128 +1,143 @@
 const db = require("../models");
-Article = db.article
-ArticleCategory = db.articleCategory
+Article = db.article;
+ArticleCategory = db.articleCategory;
 const Sequelize = require("sequelize");
 
 // Add Recommend
 exports.addRecommend = (req, res) => {
   Article.findOne({
     where: {
-      id: req.params.id
-    }
+      id: req.params.id,
+    },
   }).then((selectedArticle) => {
     Article.update(
       {
-        recommends: (selectedArticle.recommends + 1),
-      }, {
-      where: {
-        id: req.params.id
+        recommends: selectedArticle.recommends + 1,
       },
-    }).then(result => {
+      {
+        where: {
+          id: req.params.id,
+        },
+      }
+    ).then((result) => {
       res.status(200).send(result);
     });
   });
-}
+};
 
 // Add Opposition
 exports.addOpposition = (req, res) => {
   Article.findOne({
     where: {
-      id: req.params.id
-    }
+      id: req.params.id,
+    },
   }).then((selectedArticle) => {
     Article.update(
       {
-        oppositions: (selectedArticle.oppositions + 1),
-      }, {
-      where: {
-        id: req.params.id
+        oppositions: selectedArticle.oppositions + 1,
       },
-    }).then(result => {
+      {
+        where: {
+          id: req.params.id,
+        },
+      }
+    ).then((result) => {
       res.status(200).send(result);
     });
   });
-}
+};
 
 // Add browingCount
 exports.addBrowingCount = (req, res) => {
   Article.findOne({
     where: {
-      id: req.params.id
-    }
+      id: req.params.id,
+    },
   }).then((selectedArticle) => {
     Article.update(
       {
-        browingcount: (selectedArticle.browingcount + 1),
-      }, {
-      where: {
-        id: req.params.id
+        browingcount: selectedArticle.browingcount + 1,
       },
-    }).then(result => {
+      {
+        where: {
+          id: req.params.id,
+        },
+      }
+    ).then((result) => {
       res.status(200).send(result);
     });
   });
-}
-
-// Find best adding user
-// exports.findTopUser = (req, res) => {
-//   //   return ArticleCategory.findAll({
-//   //     include: ["articles"],
-//   //   }).then((result) => {
-//   //     // console.log("------------------------>",result)
-//   //     res.json(result)
-//   //   });
-//   Article.sequelize.query(`SELECT * 
-//                            FROM articles
-//                            LEFT JOIN users ON users.id = articles.userId
-//                           WHERE browingcount IN (SELECT MAX(browingcount) FROM articles)
-//                           `).then((result) => { res.json(result) })
-
-// }
-
-// Get top programs
-exports.findTopUser = (req, res) => {
-  return Article.findAll({
-    group: ['userId'],
-    attributes: [
-      'userId',
-      [Sequelize.fn('sum', Sequelize.col('recommends')), 'total_amount'],
-    ],
-  }).then((article) => {
-    res.json(article)
-    // return Program.findAll({
-    //   limit: 3,
-    //   order: [['recommends', 'DESC']]
-    //   // include: ["programCategory"],
-    // }).then((program) => {
-    //   res.json(program)
-    // });
-  });
 };
 
+// Find best adding user
+exports.findTopUser = (req, res) => {
+  //   return ArticleCategory.findAll({
+  //     include: ["articles"],
+  //   }).then((result) => {
+  //     // console.log("------------------------>",result)
+  //     res.json(result)
+  //   });
+
+  // Article.sequelize.query(`SELECT *
+  //                          FROM articles
+  //                          LEFT JOIN users ON users.id = articles.userId
+  //                         WHERE browingcount IN (SELECT MAX(browingcount) FROM articles)
+  //                         `).then((result) => { res.json(result) })
+  Article.sequelize.query(
+      `SELECT id, username, (SELECT SUM(recommends) FROM articles WHERE articles.userId=users.id) AS total_recommends FROM users ORDER BY total_recommends DESC                          `
+    )
+    .then((result) => {
+      res.json(result);
+    });
+};
+
+// Get top programs
+// exports.findTopUser = (req, res) => {
+//   return Article.findAll({
+//     group: ['userId'],
+//     attributes: [
+//       'userId',
+//       [Sequelize.fn('sum', Sequelize.col('recommends')), 'total_amount'],
+//     ],
+//   }).then((article) => {
+//     res.json(article)
+
+//     // return Program.findAll({
+//     //   limit: 3,
+//     //   order: [['recommends', 'DESC']]
+//     //   // include: ["programCategory"],
+//     // }).then((program) => {
+//     //   res.json(program)
+//     // });
+//   });
+// };
 
 // Get all Categories include article
 exports.findAll = (req, res) => {
   return ArticleCategory.findAll({
     include: ["articles"],
   }).then((articleCategories) => {
-    res.json(articleCategories)
+    res.json(articleCategories);
   });
 };
 
 // Get the articles for a given category
 exports.findArticleCategoryById = (req, res) => {
-  return ArticleCategory.findByPk(req.params.id, { include: ["articles"] })
-    .then((articlecategories) => {
-      // res.json(category)
-      res.status(200).send(articlecategories);
-    });
+  return ArticleCategory.findByPk(req.params.id, {
+    include: ["articles"],
+  }).then((articlecategories) => {
+    // res.json(category)
+    res.status(200).send(articlecategories);
+  });
 };
 
 // Get the article for a given article id
 exports.findArticleById = (req, res) => {
-  return Article.findByPk(req.params.id, { include: ["articleCategory", "user"] })
+  return Article.findByPk(req.params.id, {
+    include: ["articleCategory", "user"],
+  })
     .then((article) => {
-      res.json(article)
+      res.json(article);
     })
     .catch((err) => {
       console.log(">> Error while finding article: ", err);
@@ -131,8 +146,7 @@ exports.findArticleById = (req, res) => {
 
 //Get All Categories
 exports.getAllCategories = (req, res) => {
-  ArticleCategory.findAll({
-  }).then(result => {
+  ArticleCategory.findAll({}).then((result) => {
     res.status(200).send(result);
   });
 };
@@ -141,13 +155,12 @@ exports.getAllCategories = (req, res) => {
 exports.getOneCategory = (req, res) => {
   ArticleCategory.findOne({
     where: {
-      id: req.params.id
-    }
-  })
-    .then(result => {
-      res.status(200).send(result)
-    })
-}
+      id: req.params.id,
+    },
+  }).then((result) => {
+    res.status(200).send(result);
+  });
+};
 
 //Create New Category
 exports.createCategory = (req, res) => {
@@ -156,10 +169,10 @@ exports.createCategory = (req, res) => {
     title: req.body.title,
     description: req.body.description,
   })
-    .then(result => {
+    .then((result) => {
       res.status(200).send(result);
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).send({ message: err.message });
     });
 };
@@ -170,11 +183,13 @@ exports.updateCategory = (req, res) => {
     {
       title: req.body.title,
       description: req.body.description,
-    }, {
-    where: {
-      id: req.params.id
     },
-  }).then(result => {
+    {
+      where: {
+        id: req.params.id,
+      },
+    }
+  ).then((result) => {
     res.status(200).send(result);
   });
 };
@@ -182,37 +197,36 @@ exports.updateCategory = (req, res) => {
 //Delete Category
 exports.deleteCategory = async (req, res) => {
   try {
-    const postDelete = await ArticleCategory.destroy({ where: { id: req.params.id } });
-    res.json(postDelete)
+    const postDelete = await ArticleCategory.destroy({
+      where: { id: req.params.id },
+    });
+    res.json(postDelete);
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 };
 
 // Get All Articles
 exports.allArticle = (req, res) => {
-  Article.findAll({
-  }).then(result => {
+  Article.findAll({}).then((result) => {
     res.status(200).send(result);
   });
 };
-
 
 //Get Article Onebyone
 exports.oneArticle = (req, res) => {
   Article.findOne({
     where: {
-      id: req.params.id
-    }
-  })
-    .then(result => {
-      res.status(200).send(result)
-    })
-}
+      id: req.params.id,
+    },
+  }).then((result) => {
+    res.status(200).send(result);
+  });
+};
 
 // Verify New Article
 exports.verifyArticle = (req, res) => {
-  res.json(1)
+  res.json(1);
 };
 
 // Create New Article
@@ -222,17 +236,18 @@ exports.createArticle = (req, res) => {
     name: req.body.name,
     description: req.body.description,
     contact_number: req.body.contact_number,
+    articleCategoryId: req.body.articleCategoryId,
     attach_url: req.body.attach_url,
     source: req.body.source,
     recommends: req.body.recommends,
     oppositions: req.body.oppositions,
-    browingcount: req.body.browingcount
+    browingcount: req.body.browingcount,
     // category: req.body.category
   })
-    .then(result => {
+    .then((result) => {
       res.status(200).send(result);
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).send({ message: err.message });
     });
 };
@@ -248,13 +263,15 @@ exports.updateArticle = (req, res) => {
       source: req.body.source,
       recommends: req.body.recommends,
       oppositions: req.body.oppositions,
-      browingcount: req.body.browingcount
+      browingcount: req.body.browingcount,
       // category: req.body.category
-    }, {
-    where: {
-      id: req.params.id
     },
-  }).then(result => {
+    {
+      where: {
+        id: req.params.id,
+      },
+    }
+  ).then((result) => {
     res.status(200).send(result);
   });
 };
@@ -263,8 +280,8 @@ exports.updateArticle = (req, res) => {
 exports.deleteArticle = async (req, res) => {
   try {
     const postDelete = await Article.destroy({ where: { id: req.params.id } });
-    res.json(postDelete)
+    res.json(postDelete);
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 };

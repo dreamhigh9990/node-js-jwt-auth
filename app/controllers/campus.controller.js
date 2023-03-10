@@ -201,16 +201,25 @@ exports.upVote = (req, res) => {
   });
 };
 
+
 //downVote
 exports.downVote = (req, res) => {
   Campus.update(
     {
       unrecommends: req.body.unrecommends,
     }, {
-    where: {
-      id: req.params.id
-    },
-  }).then(result => {
-    res.status(200).send(result);
-  });
-};
+      where: {
+        id: req.params.id
+      },
+    }).then(result => {
+      res.status(200).send(result);
+    });
+  };
+  exports.findTopUser = (req, res) => {
+    Campus.sequelize.query(
+        `SELECT id, username, (SELECT SUM(recommends) FROM campuses WHERE campuses.userId=users.id) AS total_recommends FROM users ORDER BY total_recommends DESC LIMIT 3                       `
+      )
+      .then((result) => {
+        res.json(result);
+      });
+  };

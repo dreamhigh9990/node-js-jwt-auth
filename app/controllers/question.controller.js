@@ -11,6 +11,14 @@ exports.findAll = (req, res) => {
     });
 };
 
+exports.findSomeQuestions = (req, res) => {
+    return Question.findAll({
+        include: ["degree"],
+    }).then((questions) => {
+        res.json(questions)
+    });
+};
+
 // Get the questions for a given user id
 exports.findQuestionById = (req, res) => {
     return Question.findByPk(req.params.id, { include: ["degree"] })

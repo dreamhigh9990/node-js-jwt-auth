@@ -23,6 +23,12 @@ module.exports = (sequelize, Sequelize) => {
     },
     password: {
       type: Sequelize.STRING
+    },
+    purchasedAvatar: {
+      type: Sequelize.TEXT
+    },
+    currentAvatarId:{
+      type: Sequelize.STRING
     }
   });
 

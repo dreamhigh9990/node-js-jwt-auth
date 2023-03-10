@@ -28,10 +28,6 @@ exports.createAvatar = async (req, res) => {
   req.tailPath = "avatar/"
   req.dateNow = Date.now()
 
-  if(req.file==null){
-    res.status(200).send(result);
-  }
-
   try {
     await uploadFile(req, res);
     // Save Avatar to Database
@@ -80,6 +76,28 @@ exports.download = (req, res) => {
 
 // Download Avatar By Id
 exports.downloadById = (req, res) => {
+  const directoryPath = __basedir + "/resources/static/assets/uploads/avatar/";
+
+  Avatar.findOne({
+    where: {
+      id: req.params.id
+    }
+  })
+    .then(result => {
+      const fileName = result.file_url;
+      res.download(directoryPath + fileName, fileName, (err) => {
+        if (err) {
+          res.status(500).send({
+            message: "Could not download the file. " + err,
+          });
+        }
+      });
+      // res.status(200).send(result)
+    })
+};
+
+// Download Avatar By currentAvatarId
+exports.downloadByCurrentId = (req, res) => {
   const directoryPath = __basedir + "/resources/static/assets/uploads/avatar/";
 
   Avatar.findOne({

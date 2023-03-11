@@ -9,11 +9,10 @@ module.exports = function (app) {
         next();
     });
 
-    // frontend routes
-    // app.get(
-    //     "/api/questions/findSomeQuestions",
-    //     controller.findSomeQuestions
-    // );
+    app.get(
+        "/api/questions/findSomeQuestions",
+        controller.findSomeQuestions
+    );
 
     // frontend routes
     app.get(

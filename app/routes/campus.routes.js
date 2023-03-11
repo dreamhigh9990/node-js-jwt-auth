@@ -96,5 +96,10 @@ module.exports = function (app) {
     "/api/campus/downvote/:id",
     controller.downVote
   );
+
+  app.get(
+    "/api/campus/findTopUser",
+    controller.findTopUser
+  );
 };
 

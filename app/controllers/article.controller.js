@@ -84,7 +84,7 @@ exports.findTopUser = (req, res) => {
   //                         WHERE browingcount IN (SELECT MAX(browingcount) FROM articles)
   //                         `).then((result) => { res.json(result) })
   Article.sequelize.query(
-      `SELECT id, username, (SELECT SUM(recommends) FROM articles WHERE articles.userId=users.id) AS total_recommends FROM users ORDER BY total_recommends DESC                          `
+      `SELECT id, username, (SELECT SUM(recommends) FROM articles WHERE articles.userId=users.id) AS total_recommends FROM users ORDER BY total_recommends DESC LIMIT 2                       `
     )
     .then((result) => {
       res.json(result);

@@ -23,12 +23,22 @@ exports.findAll = (req, res) => {
 
 // Get the campus for a given category id
 exports.findCampusCategoryById = (req, res) => {
-  return CampusCategory.findByPk(req.params.id, { include: ["campuses"] })
+  return Campus.findAll({
+    include: {
+      model: CampusCategory,
+      as: "campusCategory",
+      where: {
+        id: req.params.id.split(',')
+      }
+    },
+  })
     .then((category) => {
       // res.json(category)
       res.status(200).send(category);
     });
 };
+
+
 
 // Get the campus for a given campus id
 exports.findCampusById = (req, res) => {
@@ -78,7 +88,7 @@ exports.createCategory = (req, res) => {
   CampusCategory.create({
     title: req.body.title,
     description: req.body.description,
-    parentId:req.body.parentId
+    parentId: req.body.parentId
   })
     .then(result => {
       res.status(200).send(result);
@@ -94,7 +104,7 @@ exports.updateCategory = (req, res) => {
     {
       title: req.body.title,
       description: req.body.description,
-      parentId:req.body.parentId
+      parentId: req.body.parentId
     }, {
     where: {
       id: req.params.id
@@ -208,18 +218,18 @@ exports.downVote = (req, res) => {
     {
       unrecommends: req.body.unrecommends,
     }, {
-      where: {
-        id: req.params.id
-      },
-    }).then(result => {
-      res.status(200).send(result);
+    where: {
+      id: req.params.id
+    },
+  }).then(result => {
+    res.status(200).send(result);
+  });
+};
+exports.findTopUser = (req, res) => {
+  Campus.sequelize.query(
+    `SELECT id, username, (SELECT SUM(recommends) FROM campuses WHERE campuses.userId=users.id) AS total_recommends FROM users ORDER BY total_recommends DESC LIMIT 3`
+  )
+    .then((result) => {
+      res.json(result);
     });
-  };
-  exports.findTopUser = (req, res) => {
-    Campus.sequelize.query(
-        `SELECT id, username, (SELECT SUM(recommends) FROM campuses WHERE campuses.userId=users.id) AS total_recommends FROM users ORDER BY total_recommends DESC LIMIT 3`
-      )
-      .then((result) => {
-        res.json(result);
-      });
-  };
+};

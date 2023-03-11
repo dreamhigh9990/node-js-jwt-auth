@@ -217,7 +217,7 @@ exports.downVote = (req, res) => {
   };
   exports.findTopUser = (req, res) => {
     Campus.sequelize.query(
-        `SELECT id, username, (SELECT SUM(recommends) FROM campuses WHERE campuses.userId=users.id) AS total_recommends FROM users ORDER BY total_recommends DESC LIMIT 3                       `
+        `SELECT id, username, (SELECT SUM(recommends) FROM campuses WHERE campuses.userId=users.id) AS total_recommends FROM users ORDER BY total_recommends DESC LIMIT 3`
       )
       .then((result) => {
         res.json(result);

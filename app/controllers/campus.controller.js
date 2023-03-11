@@ -201,7 +201,7 @@ exports.deleteCampus = async (req, res) => {
 exports.upVote = (req, res) => {
   Campus.update(
     {
-      recommends: req.body.recommends,
+      recommends: req.body.recommends+1,
     }, {
     where: {
       id: req.params.id
@@ -216,7 +216,7 @@ exports.upVote = (req, res) => {
 exports.downVote = (req, res) => {
   Campus.update(
     {
-      unrecommends: req.body.unrecommends,
+      unrecommends: req.body.unrecommends+1,
     }, {
     where: {
       id: req.params.id

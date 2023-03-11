@@ -258,7 +258,7 @@ exports.deleteProgram = async (req, res) => {
 exports.programUpVote = (req, res) => {
   Program.update(
     {
-      recommends: req.body.recommends,
+      recommends: req.body.recommends + 1,
     }, {
     where: {
       id: req.params.id
@@ -272,7 +272,7 @@ exports.programUpVote = (req, res) => {
 exports.ProgramDownVote = (req, res) => {
   Program.update(
     {
-      unrecommends: req.body.unrecommends,
+      unrecommends: req.body.unrecommends + 1,
     }, {
     where: {
       id: req.params.id

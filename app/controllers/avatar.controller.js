@@ -84,15 +84,17 @@ exports.downloadById = (req, res) => {
     }
   })
     .then(result => {
-      const fileName = result.file_url;
-      res.download(directoryPath + fileName, fileName, (err) => {
-        if (err) {
-          res.status(500).send({
-            message: "Could not download the file. " + err,
-          });
-        }
-      });
-      // res.status(200).send(result)
+      if ( result.file_url !== null) {
+        const fileName = result.file_url;
+        res.download(directoryPath + fileName, fileName, (err) => {
+          if (err) {
+            res.status(500).send({
+              message: "Could not download the file. " + err,
+            });
+          }
+        });
+        // res.status(200).send(result)
+      }
     })
 };
 

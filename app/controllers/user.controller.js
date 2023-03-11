@@ -135,7 +135,7 @@ exports.updateUser = (req, res) => {
       email: req.body.email,
       gender: req.body.gender,
       birthday: req.body.birthday,
-      purchasedAvatar: req.body.purchasedAvatar,
+      purchasedAvatar: req.body.purchasedAvatar,      
       currentAvatarId: req.body.currentAvatarId,
     }, {
     where: {
@@ -143,5 +143,6 @@ exports.updateUser = (req, res) => {
     },
   }).then(result => {
     res.status(200).send(result);
+    console.log("purchasedAvatar",req.body.purchasedAvatar);
   });
 };

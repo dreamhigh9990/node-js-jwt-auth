@@ -25,7 +25,15 @@ exports.findAll = (req, res) => {
 
 // Get the programs for a given category id
 exports.findProgramCategoryById = (req, res) => {
-  return ProgramCategory.findByPk(req.params.id, { include: ["programs"] })
+  return Program.findAll({
+    include: {
+      model: ProgramCategory,
+      as: "programCategory",
+      where: {
+        id: req.params.id.split(',')
+      }
+    },
+  })
     .then((category) => {
       // res.json(category)
       res.status(200).send(category);

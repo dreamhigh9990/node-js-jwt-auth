@@ -157,6 +157,7 @@ exports.createCampus = (req, res) => {
     cost: req.body.cost,
     browses: req.body.browses,
     recommends: req.body.recommends,
+    unrecommends: req.body.unrecommends,
     campusCategoryId: req.body.campusCategoryId
   })
     .then(result => {
@@ -176,6 +177,7 @@ exports.updateCampus = (req, res) => {
       cost: req.body.cost,
       browses: req.body.browses,
       recommends: req.body.recommends,
+      unrecommends: req.body.unrecommends,
       campusCategoryId: req.body.campusCategoryId
     }, {
     where: {

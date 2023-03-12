@@ -54,7 +54,7 @@ exports.findProgramById = (req, res) => {
 // Get top programs
 exports.getTopPrograms = (req, res) => {
   return Program.findAll({
-    limit: 3,
+    limit: 5,
     order: [['purchases', 'DESC']]
     // include: ["programCategory"],
   }).then((program) => {

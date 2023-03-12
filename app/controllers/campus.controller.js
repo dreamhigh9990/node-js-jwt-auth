@@ -1,7 +1,7 @@
 const db = require("../models");
 Campus = db.campus
 CampusCategory = db.campusCategory
-
+BrowseHistory = db.browseHistory
 
 // Get all Categories include campuses
 exports.findAllBy = (req, res) => {
@@ -228,9 +228,10 @@ exports.downVote = (req, res) => {
   });
 };
 exports.findTopUser = (req, res) => {
-  Campus.sequelize.query(
-    `SELECT id, username, (SELECT SUM(recommends) FROM campuses WHERE campuses.userId=users.id) AS total_recommends FROM users ORDER BY total_recommends DESC LIMIT 3`
-  )
+  BrowseHistory.sequelize.query(
+    // `SELECT id, username, (SELECT SUM(recommends) FROM campuses WHERE campuses.userId=users.id) AS total_recommends FROM users ORDER BY total_recommends DESC LIMIT 3`
+    `SELECT userId, COUNT(*) AS top, (SELECT username FROM users WHERE browsehistories.userId=users.id) AS username FROM browsehistories WHERE campusId GROUP BY userId ORDER BY COUNT(*) DESC LIMIT 3`
+    )
     .then((result) => {
       res.json(result[0]);
     });

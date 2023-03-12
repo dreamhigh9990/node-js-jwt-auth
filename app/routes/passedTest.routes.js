@@ -14,4 +14,13 @@ module.exports = function (app) {
         "/api/findPassedTestById/:id",
         controller.findPassedTestById
     );
+    
+    app.post(
+        "/api/passedTest/create",
+        controller.createPassedTest
+    );
+    app.put(
+      "/api/passedTest/update/:id",
+      controller.updatePassedTest
+    );
 }

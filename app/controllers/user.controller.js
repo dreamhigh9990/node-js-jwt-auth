@@ -137,6 +137,7 @@ exports.updateUser = (req, res) => {
       birthday: req.body.birthday,
       purchasedAvatar: req.body.purchasedAvatar,      
       currentAvatarId: req.body.currentAvatarId,
+      votestate: req.body.votestate,
     }, {
     where: {
       id: req.params.id

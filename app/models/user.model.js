@@ -29,7 +29,10 @@ module.exports = (sequelize, Sequelize) => {
     },
     currentAvatarId:{
       type: Sequelize.STRING
-    }
+    },
+    votestate: {
+      type: Sequelize.TEXT
+    },
   });
 
   return User;

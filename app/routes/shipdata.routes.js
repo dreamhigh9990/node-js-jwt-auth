@@ -77,4 +77,9 @@ module.exports = function (app) {
         "/api/shipdata/delete/:id",
         controller.deleteData
     );
+
+    app.get(
+        "/api/shipdata/fileById/:id",
+        controller.downloadShipImageById
+    );
 };

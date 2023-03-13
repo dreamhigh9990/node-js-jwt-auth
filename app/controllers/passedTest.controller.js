@@ -8,13 +8,13 @@ User = db.user
 // Get the browseHistories for a given user
 exports.findPassedTestById = (req, res) => {
     PassedTest.findAll({
-        include: [
-            {
-                model: db.campusCategory,
-                as: "campusCategory",
-                attributes: ['title']
-            }
-        ],
+        // include: [
+        //     {
+        //         model: db.campusCategory,
+        //         as: "campusCategory",
+        //         attributes: ['title']
+        //     }
+        // ],
         where: { userId: req.params.id }
     }
     )
@@ -30,10 +30,10 @@ exports.createPassedTest = (req, res) => {
     //save new passed history to database
     PassedTest.create({
         date: req.body.date,
-        testing_counter: req.body.testing_counter,
-        passed_counter: req.body.passed_counter,
+        total: req.body.total,
+        status: req.body.status,
+        matched: req.body.matched,
         userId: req.body.userId,
-        campusCategoryId: req.body.campusCategoryId,
         level: req.body.level
     })
         .then(result => {
@@ -48,10 +48,10 @@ exports.createPassedTest = (req, res) => {
 exports.updatePassedTest = (req, res) => {
     PassedTest.update({
         date: req.body.date,
-        testing_counter: req.body.testing_counter,
-        passed_counter: req.body.passed_counter,
+        total: req.body.total,
+        status: req.body.status,
+        matched: req.body.matched,
         userId: req.body.userId,
-        campusCategoryId: req.body.campusCategoryId,
         level: req.body.level
     },
       {

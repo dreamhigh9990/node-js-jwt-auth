@@ -1,10 +1,12 @@
 const db = require("../models");
-Data = db.data
+const uploadFile = require("../middleware/upload");
+
+ShipData = db.shipdata
 DataCategory = db.dataCategory
   
 // Get all Categories include datas
 exports.findAll = (req, res) => {
-  return Data.findAll({
+  return ShipData.findAll({
     include: ["dataCategory"],
   }).then((data) => {
     res.json(data)
@@ -22,7 +24,7 @@ exports.findDataCategoryById = (req, res) => {
 
 // Get the data for a given data id
 exports.findDataById = (req, res) => {
-  return Data.findByPk(req.params.id, { include: ["dataCategory"] })
+  return ShipData.findByPk(req.params.id, { include: ["dataCategory"] })
     .then((data) => {
       res.json(data)
     })
@@ -99,7 +101,7 @@ exports.deleteCategory = async (req, res) => {
 
 // Get All Datas
 exports.allData = (req, res) => {
-    Data.findAll({
+    ShipData.findAll({
     }).then(result => {
         res.status(200).send(result);
     });
@@ -107,109 +109,126 @@ exports.allData = (req, res) => {
 
 //Get Program Onebyone
 exports.oneData = (req, res) => {
-    Data.findOne({
-      where: {
-        id: req.params.id
-      }
-    })
-    .then(result => {
-      res.status(200).send(result)
-    })
-  }
+  ShipData.findOne({
+    where: {
+      id: req.params.id
+    }
+  })
+  .then(result => {
+    res.status(200).send(result)
+  })
+}
 
-// Create New Data
-exports.createData = (req, res) => {
-    // Save Data to Database
-    Data.create({
-        name: req.body.name,
-        file_url: req.body.file_url,
-        data_type: req.body.data_type,
-        amount: req.body.amount,
-        unit: req.body.unit,
-        type: req.body.type,
-        port: req.body.port,
-        date: req.body.date,
-        price: req.body.price,
-        from: req.body.from,
-        to: req.body.to,
-        owner: req.body.owner,
-        runner: req.body.runner,
-        total_weight: req.body.total_weight,
-        load_weight: req.body.load_weight,
-        weight: req.body.weight,
-        current_height: req.body.current_height,
-        width: req.body.width,
-        length: req.body.length,
-        full_load: req.body.full_load,
-        engine: req.body.engine,
-        created: req.body.created,
-        factory: req.body.factory,
-        location: req.body.location,
-        status: req.body.status
+// Create New ShipData
+exports.createData = async (req, res) => {
+  req.tailPath = "data/shipdata"
+  req.dateNow = Date.now()
+
+  try {
+    await uploadFile(req, res);
+    // Save Media to Database
+    ShipData.create({
+      name: req.body.name,
+      image_url: req.dateNow + req.file.originalname,
+      plan_date: req.body.plan_date,
+      type: req.body.type,
+      port: req.body.port,
+      price: req.body.price,
+      owner: req.body.owner,
+      runner: req.body.runner,
+      total_weight: req.body.total_weight,
+      load_weight: req.body.load_weight,
+      weight: req.body.weight,
+      current_height: req.body.current_height,
+      width: req.body.width,
+      length: req.body.length,
+      full_load: req.body.full_load,
+      engine: req.body.engine,
+      built_date: req.body.built_date,
+      factory: req.body.factory,
+      location: req.body.location,
+      status: req.body.status,
     })
-        .then(result => {
-            res.status(200).send(result);
-        })
-        .catch(err => {
-            res.status(500).send({ message: err.message });
-        });
-};
-
-// Update Data
-exports.updateData = (req, res) => {
-    Data.update(
-        {
-          name: req.body.name,
-          file_url: req.body.file_url,
-          data_type: req.body.data_type,
-          amount: req.body.amount,
-          unit: req.body.unit,
-          type: req.body.type,
-          port: req.body.port,
-          date: req.body.date,
-          price: req.body.price,
-          from: req.body.from,
-          to: req.body.to,
-          owner: req.body.owner,
-          runner: req.body.runner,
-          total_weight: req.body.total_weight,
-          load_weight: req.body.load_weight,
-          weight: req.body.weight,
-          current_height: req.body.current_height,
-          width: req.body.width,
-          length: req.body.length,
-          full_load: req.body.full_load,
-          engine: req.body.engine,
-          created: req.body.created,
-          factory: req.body.factory,
-          location: req.body.location,
-          status: req.body.status
-
-            // name: req.body.name,
-            // file_url: req.body.file_url,
-            // data_type: req.body.data_type,
-            // amount: req.body.amount,
-            // unit: req.body.unit,
-            // specification: req.body.specification,
-            // purpose: req.body.purpose,
-            // prediction_date: req.body.prediction_date,
-            // datacol: req.body.datacol,
-            // from: req.body.from,
-            // to: req.body.to,
-            // browses: req.body.browses
-        }, {
-        where: {
-            id: req.params.id
-        },
-    }).then(result => {
+      .then(result => {
         res.status(200).send(result);
+      })
+      .catch(err => {
+        res.status(500).send({ message: err.message });
+      });
+  } catch (err) {
+    console.log(err);
+
+    if (err.code == "LIMIT_FILE_SIZE") {
+      return res.status(500).send({
+        message: "File size cannot be larger than 2MB!",
+      });
+    }
+
+    res.status(500).send({
+      message: `Could not upload the file: ${req.file.originalname}. ${err}`,
     });
+  }
 };
 
-// Delete Data
+// Update ShipData
+exports.updateData = (req, res) => {
+  ShipData.update(
+    {
+    name: req.body.name,
+    image_url: req.body.image_url,
+    plan_date: req.body.plan_date,
+    type: req.body.type,
+    port: req.body.port,
+    price: req.body.price,
+    owner: req.body.owner,
+    runner: req.body.runner,
+    total_weight: req.body.total_weight,
+    load_weight: req.body.load_weight,
+    weight: req.body.weight,
+    current_height: req.body.current_height,
+    width: req.body.width,
+    length: req.body.length,
+    full_load: req.body.full_load,
+    engine: req.body.engine,
+    built_date: req.body.built_date,
+    factory: req.body.factory,
+    location: req.body.location,
+    status: req.body.status,
+    }, {
+    where: {
+        id: req.params.id
+    },
+  }).then(result => {
+      res.status(200).send(result);
+  });
+};
+
+exports.downloadShipImageById = (req, res) => {
+  const directoryPath = __basedir + "/resources/static/assets/uploads/data/shipdata/";
+
+  ShipData.findOne({
+    where: {
+      id: req.params.id
+    }
+  })
+    .then(result => {
+      var fileName = '';
+      if(result.image_url) fileName = result.image_url;
+      res.download(directoryPath + fileName, fileName, (err) => {
+        if (err) {
+          res.status(500).send({
+            message: "Could not download the file. " + err,
+          });
+        }
+      });
+      // res.status(200).send(result)
+    })
+};
+
+// Delete ShipData
 exports.deleteData = async (req, res) => {
     try {
-      const postDelete = await Data.destroy({ where: { id: req.params.id } });
+      const postDelete = await ShipData.destroy({ where: { id: req.params.id } });
       res.json(postDelete)
     } catch (error) {
       console.log(error)

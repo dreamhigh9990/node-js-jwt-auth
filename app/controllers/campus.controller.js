@@ -235,3 +235,12 @@ exports.findTopUser = (req, res) => {
       res.json(result[0]);
     });
 };
+
+exports.getAllCampusWithBrowses = (req, res) => {
+  BrowseHistory.sequelize.query(
+    // `SELECT id, username, (SELECT SUM(recommends) FROM campuses WHERE campuses.userId=users.id) AS total_recommends FROM users ORDER BY total_recommends DESC LIMIT 3`
+    `SELECT *, COUNT(*) AS browseCnt FROM browsehistories LEFT JOIN campuses ON browsehistories.campusId=campuses.id GROUP BY campuses.id`)
+    .then((result) => {
+      res.json(result[0]);
+    });
+};

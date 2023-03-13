@@ -3,12 +3,15 @@ module.exports = (sequelize, Sequelize) => {
         level: {
             type: Sequelize.STRING
         },
-        testing_counter: {
+        total: {
             type: Sequelize.INTEGER
         },
-        passed_counter: {
+        matched: {
             type: Sequelize.INTEGER
-        }       
+        },
+        status: {
+            type: Sequelize.STRING
+        },
     });
 
     return PassedTest;

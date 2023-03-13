@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  const DataPurchaseHistory = sequelize.define("dataPurchaseHistoies", {
+  const DataPurchaseHistory = sequelize.define("datapurchasehistories", {
     categoryId: {
       type: DataTypes.INTEGER
     },
@@ -17,6 +17,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     voterId: {
       type: DataTypes.INTEGER
+    },
+    voterdate: {
+      type: DataTypes.DATEONLY
     },
   });
 

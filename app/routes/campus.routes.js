@@ -101,5 +101,10 @@ module.exports = function (app) {
     "/api/campus/findTopUser",
     controller.findTopUser
   );
+
+  app.get(
+    "/api/campus/getAllCampusWithBrowses",
+    controller.getAllCampusWithBrowses
+  )
 };
 

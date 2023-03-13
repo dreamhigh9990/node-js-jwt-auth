@@ -1,7 +1,7 @@
 module.exports = (sequelize, Sequelize) => {
     const PassedTest = sequelize.define("passedTests", {
         level: {
-            type: Sequelize.INTEGER
+            type: Sequelize.STRING
         },
         testing_counter: {
             type: Sequelize.INTEGER

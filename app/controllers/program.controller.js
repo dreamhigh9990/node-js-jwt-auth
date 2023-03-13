@@ -1,5 +1,5 @@
 const db = require("../models");
-const uploadFile = require("../middleware/upload");
+const uploadImage = require("../middleware/uploadimage");
 
 Program = db.program
 ProgramCategory = db.programCategory
@@ -151,7 +151,7 @@ exports.createProgram =async (req, res) => {
   req.dateNow = Date.now()
 
   try {
-    await uploadFile(req, res);
+    await uploadImage(req, res);
     // Save Program to Database
     Program.create({
       name: req.body.name,
@@ -162,8 +162,8 @@ exports.createProgram =async (req, res) => {
       purchases: req.body.purchases,
       recommends: req.body.recommends,
       unrecommends: req.body.unrecommends,
-      file_url: req.dateNow + req.file.originalname,
-      image_url:req.body.image_url,
+      image_url:req.dateNow + req.file.originalname,
+      // file_url: req.dateNow + req.file.originalname,
       cost: req.body.cost
     })
       .then(result => {
@@ -213,7 +213,7 @@ exports.downloadById = (req, res) => {
     }
   })
     .then(result => {
-      const fileName = result.file_url;
+      const fileName = result.image_url;
       res.download(directoryPath + fileName, fileName, (err) => {
         if (err) {
           res.status(500).send({

@@ -38,10 +38,10 @@ exports.getAllQuestions = (req, res) => {
 // Get number of questions include answers
 exports.findSomeQuestions = (req, res) => {
     return Question.findAll({
-        // where: {
-        //     degreeId: 2,
-        //     level: 3
-        // },
+        where: {
+            degreeId: req.params.id,
+            level: req.params.level
+        },
         order: [
             [Sequelize.literal('RAND()')]
         ], limit: 4,

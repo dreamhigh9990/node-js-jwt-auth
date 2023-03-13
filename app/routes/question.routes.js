@@ -10,7 +10,7 @@ module.exports = function (app) {
     });
 
     app.get(
-        "/api/questions/findSomeQuestions",
+        "/api/questions/findSomeQuestions/:id/:level",
         controller.findSomeQuestions
     );
 

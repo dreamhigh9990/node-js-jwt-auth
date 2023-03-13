@@ -79,9 +79,12 @@ exports.getOneDataPurchaseHistory = (req, res) => {
 exports.createDataPurchaseHistory = (req, res) => {
     //save new DataPurchaseHistory to database
     DataPurchaseHistory.create({
-        type: req.body.type,
-        title: req.body.title,
-        date: req.body.date
+        categoryId: req.body.categoryId,
+        userId: req.body.userId,
+        username: req.body.username,
+        dataId: req.body.categoryId,    
+        dataname: req.body.categoryId,
+        voterId: req.body.voterId,
     })
         .then(result => {
             res.status(200).send(result);

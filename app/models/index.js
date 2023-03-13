@@ -94,11 +94,11 @@ db.passedTest.belongsTo(db.user, {
   as: "user"
 })
 
-db.campusCategory.hasMany(db.passedTest, {as: "passedtests"});
-db.passedTest.belongsTo(db.campusCategory, {
-  foreignKey: "campusCategoryId",
-  as: "campusCategory"
-})
+// db.campusCategory.hasMany(db.passedTest, {as: "passedtests"});
+// db.passedTest.belongsTo(db.campusCategory, {
+//   foreignKey: "campusCategoryId",
+//   as: "campusCategory"
+// })
 
 
 db.dataCategory.hasMany(db.data, { as: "datas" });

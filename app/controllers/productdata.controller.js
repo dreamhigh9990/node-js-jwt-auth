@@ -1,10 +1,10 @@
 const db = require("../models");
-Data = db.data
+ProductData = db.productdata
 DataCategory = db.dataCategory
   
 // Get all Categories include datas
 exports.findAll = (req, res) => {
-  return Data.findAll({
+  return ProductData.findAll({
     include: ["dataCategory"],
   }).then((data) => {
     res.json(data)
@@ -22,7 +22,7 @@ exports.findDataCategoryById = (req, res) => {
 
 // Get the data for a given data id
 exports.findDataById = (req, res) => {
-  return Data.findByPk(req.params.id, { include: ["dataCategory"] })
+  return ProductData.findByPk(req.params.id, { include: ["dataCategory"] })
     .then((data) => {
       res.json(data)
     })
@@ -99,7 +99,7 @@ exports.deleteCategory = async (req, res) => {
 
 // Get All Datas
 exports.allData = (req, res) => {
-    Data.findAll({
+    ProductData.findAll({
     }).then(result => {
         res.status(200).send(result);
     });
@@ -107,7 +107,7 @@ exports.allData = (req, res) => {
 
 //Get Program Onebyone
 exports.oneData = (req, res) => {
-    Data.findOne({
+    ProductData.findOne({
       where: {
         id: req.params.id
       }
@@ -117,47 +117,58 @@ exports.oneData = (req, res) => {
     })
   }
 
-// Create New Data
-exports.createData = (req, res) => {
-    // Save Data to Database
-    Data.create({
-        name: req.body.name,
-        file_url: req.body.file_url,
-        data_type: req.body.data_type,
-        amount: req.body.amount,
-        unit: req.body.unit,
-        type: req.body.type,
-        port: req.body.port,
-        date: req.body.date,
-        price: req.body.price,
-        from: req.body.from,
-        to: req.body.to,
-        owner: req.body.owner,
-        runner: req.body.runner,
-        total_weight: req.body.total_weight,
-        load_weight: req.body.load_weight,
-        weight: req.body.weight,
-        current_height: req.body.current_height,
-        width: req.body.width,
-        length: req.body.length,
-        full_load: req.body.full_load,
-        engine: req.body.engine,
-        created: req.body.created,
-        factory: req.body.factory,
-        location: req.body.location,
-        status: req.body.status
+// Create New ProductData
+exports.createData = async (req, res) => {
+  // Save ProductData to Database
+  req.dateNow = Date.now()
+  try {
+    await uploadFile(req, res);
+    ProductData.create({
+      name: req.body.name,
+      image_url: req.dateNow + req.file.originalname,
+      plan_date: req.body.plan_date,
+      type: req.body.type,
+      port: req.body.port,
+      price: req.body.price,
+      owner: req.body.owner,
+      runner: req.body.runner,
+      total_weight: req.body.total_weight,
+      load_weight: req.body.load_weight,
+      weight: req.body.weight,
+      current_height: req.body.current_height,
+      width: req.body.width,
+      length: req.body.length,
+      full_load: req.body.full_load,
+      engine: req.body.engine,
+      built_date: req.body.built_date,
+      factory: req.body.factory,
+      location: req.body.location,
+      status: req.body.status,
     })
-        .then(result => {
-            res.status(200).send(result);
-        })
-        .catch(err => {
-            res.status(500).send({ message: err.message });
-        });
+    .then(result => {
+        res.status(200).send(result);
+    })
+    .catch(err => {
+        res.status(500).send({ message: err.message });
+    });
+  } catch (err) {
+    console.log(err);
+
+    if (err.code == "LIMIT_FILE_SIZE") {
+      return res.status(500).send({
+        message: "File size cannot be larger than 2MB!",
+      });
+    }
+
+    res.status(500).send({
+      message: `Could not upload the file: ${req.file.originalname}. ${err}`,
+    });
+  }
 };
 
-// Update Data
+// Update ProductData
 exports.updateData = (req, res) => {
-    Data.update(
+    ProductData.update(
         {
           name: req.body.name,
           file_url: req.body.file_url,
@@ -206,10 +217,10 @@ exports.updateData = (req, res) => {
     });
 };
 
-// Delete Data
+// Delete ProductData
 exports.deleteData = async (req, res) => {
     try {
-      const postDelete = await Data.destroy({ where: { id: req.params.id } });
+      const postDelete = await ProductData.destroy({ where: { id: req.params.id } });
       res.json(postDelete)
     } catch (error) {
       console.log(error)

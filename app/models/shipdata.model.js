@@ -60,6 +60,9 @@ module.exports = (sequelize, Sequelize) => {
         status: {
             type: Sequelize.STRING
         },
+        voterId: {
+            type: Sequelize.INTEGER
+        },
     });
 
     return ShipData;

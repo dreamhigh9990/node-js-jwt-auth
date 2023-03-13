@@ -35,7 +35,10 @@ db.article = require("../models/article.model.js")(sequelize, Sequelize);
 db.avatar = require("../models/avatar.model.js")(sequelize, Sequelize);
 db.setting = require("../models/setting.model.js")(sequelize, Sequelize);
 db.media = require("../models/media.model.js")(sequelize, Sequelize);
-db.data = require("../models/data.model")(sequelize, Sequelize);
+db.shipdata = require("../models/shipdata.model")(sequelize, Sequelize);
+db.loaddata = require("../models/loaddata.model")(sequelize, Sequelize);
+db.productdata = require("../models/productdata.model")(sequelize, Sequelize);
+db.gooddata = require("../models/gooddata.model")(sequelize, Sequelize);
 db.programCategory = require("../models/programCategory.model")(sequelize, Sequelize);
 db.articleCategory = require("../models/articleCategory.model")(sequelize, Sequelize);
 db.dataCategory = require("../models/dataCategory.model")(sequelize, Sequelize);
@@ -101,11 +104,11 @@ db.passedTest.belongsTo(db.campusCategory, {
 })
 
 
-db.dataCategory.hasMany(db.data, { as: "datas" });
-db.data.belongsTo(db.dataCategory, {
-  foreignKey: "dataCategoryId",
-  as: "dataCategory",
-});
+// db.dataCategory.hasMany(db.data, { as: "datas" });
+// db.data.belongsTo(db.dataCategory, {
+//   foreignKey: "dataCategoryId",
+//   as: "dataCategory",
+// });
 
 db.campusCategory.hasMany(db.campus, { as: "campuses" });
 db.campus.belongsTo(db.campusCategory, {
@@ -118,11 +121,11 @@ db.dataPurchaseHistory.belongsTo(db.user, {
   foreignKey: "userId",
   as: "user",
 });
-db.data.hasMany(db.dataPurchaseHistory, { as: "dataPurchaseHistory" });
-db.dataPurchaseHistory.belongsTo(db.data, {
-  foreignKey: "dataId",
-  as: "data",
-});
+// db.data.hasMany(db.dataPurchaseHistory, { as: "dataPurchaseHistory" });
+// db.dataPurchaseHistory.belongsTo(db.data, {
+//   foreignKey: "dataId",
+//   as: "data",
+// });
 
 db.user.hasMany(db.browseHistory, { as: "browseHistories" });
 db.browseHistory.belongsTo(db.user, {

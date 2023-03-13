@@ -230,8 +230,7 @@ exports.downVote = (req, res) => {
 exports.findTopUser = (req, res) => {
   BrowseHistory.sequelize.query(
     // `SELECT id, username, (SELECT SUM(recommends) FROM campuses WHERE campuses.userId=users.id) AS total_recommends FROM users ORDER BY total_recommends DESC LIMIT 3`
-    `SELECT userId, COUNT(*) AS top, (SELECT username FROM users WHERE browsehistories.userId=users.id) AS username FROM browsehistories WHERE campusId GROUP BY userId ORDER BY COUNT(*) DESC LIMIT 3`
-    )
+    `SELECT userId,(SELECT currentAvatarId FROM users WHERE users.id=browsehistories.userId) AS currentAvatarsId,(SELECT username FROM users WHERE browsehistories.userId=users.id) AS username, COUNT(*) AS countVote FROM browsehistories WHERE campusId GROUP BY userId ORDER BY countVote DESC LIMIT 3`)
     .then((result) => {
       res.json(result[0]);
     });

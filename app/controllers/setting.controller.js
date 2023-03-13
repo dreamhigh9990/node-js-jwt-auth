@@ -25,15 +25,33 @@ exports.oneSetting = (req, res) => {
 
 //Get Setting Onebyone
 exports.oneSettingByTitle = (req, res) => {
-    Setting.findOne({
-      where: {
-        title: req.params.title
-      }
-    })
-      .then(result => {
+  Setting.findOne({
+    where: {
+      title: req.params.title
+    }
+  })
+    .then(result => {
+      if (result) {
         res.status(200).send(result)
-      })
-  }
+      } else {
+        var obj = {
+          title: req.params.title,
+          value: "",
+        }
+        switch (req.params.title) {
+          case "homeImages":
+            obj.value = "[]";
+            break;
+          default:
+            break;
+        }
+        Setting.create(obj).then(res =>{
+          res.status(200).send(obj);
+        });
+      }
+
+    })
+}
 
 // Create New Setting
 exports.createSetting = async (req, res) => {
@@ -90,20 +108,19 @@ exports.updateSetting = (req, res) => {
 
 // Update Setting By Title
 exports.updateSettingByTitle = (req, res) => {
-    console.log("AAAAAAAA",req.body);
-    Setting.update(
-      {
-        value: req.body.value,
-      }, {
-      where: {
-        title: req.params.title
-      },
-    }).then(result => {
-      res.status(200).send(result);
-    });
-  };
+  Setting.update(
+    {
+      value: req.body.value,
+    }, {
+    where: {
+      title: req.params.title
+    },
+  }).then(result => {
+    res.status(200).send(result);
+  });
+};
 
-  
+
 
 // Delete Setting
 exports.deleteSetting = async (req, res) => {

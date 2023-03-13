@@ -27,7 +27,7 @@ module.exports = function (app) {
 
     // backend routes
     app.get(
-        "/api/dataPurchaseHistory/get_All",
+        "/api/dataPurchaseHistory/get_AllByVoterId/:id",
         controller.getAllDataPurchaseHistories
     );
 

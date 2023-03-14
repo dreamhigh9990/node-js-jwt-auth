@@ -77,6 +77,9 @@ exports.download = (req, res) => {
 // Download Avatar By Id
 exports.downloadById = (req, res) => {
   const directoryPath = __basedir + "/resources/static/assets/uploads/avatar/";
+  if (req.params.id == 0) {
+    req.params.id = 1;
+  }
 
   Avatar.findOne({
     where: {
@@ -84,16 +87,25 @@ exports.downloadById = (req, res) => {
     }
   })
     .then(result => {
-      if ( result.file_url !== null) {
-        const fileName = result.file_url;
-        res.download(directoryPath + fileName, fileName, (err) => {
-          if (err) {
-            res.status(500).send({
-              message: "Could not download the file. " + err,
-            });
-          }
+      if (!result) {
+        res.status(500).send({
+          message: "Could not download the file. " + err,
         });
-        // res.status(200).send(result)
+      } else {
+        if ( result.file_url !== null) {
+          const fileName = result.file_url;
+          res.download(directoryPath + fileName, fileName, (err) => {
+            if (err) {
+              res.status(500).send({
+                message: "Could not download the file. " + err,
+              });
+            }
+          });
+        } else {
+          res.status(500).send({
+            message: "Could not download the file. " + err,
+          });
+        }
       }
     })
 };

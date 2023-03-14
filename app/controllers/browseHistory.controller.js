@@ -38,7 +38,7 @@ exports.getAllBrowseHistories = (req, res) => {
       {
         model: db.campus,
         as: "campus",
-        attributes: ["name", "description","level"],
+        attributes: ["name"],
         include:[
           {
             model: db.campusCategory,
@@ -48,7 +48,7 @@ exports.getAllBrowseHistories = (req, res) => {
         ]
       }
       ],
-    attributes: ["date", "count"]
+    attributes: ["id", "createdAt"]
   }).then(result => {
     res.status(200).send(result);
   });

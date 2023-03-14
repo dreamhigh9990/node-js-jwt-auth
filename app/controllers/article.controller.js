@@ -78,7 +78,7 @@ exports.findTopUser = (req, res) => {
   //     res.json(result)
   //   });
   Article.sequelize.query(
-      `SELECT id, username, (SELECT SUM(recommends) FROM articles WHERE articles.userId=users.id) AS total_recommends FROM users ORDER BY total_recommends DESC LIMIT 4                       `
+      `SELECT id, username, currentAvatarId, (SELECT SUM(recommends) FROM articles WHERE articles.userId=users.id) AS total_recommends FROM users ORDER BY total_recommends DESC LIMIT 4                       `
     )
     .then((result) => {
       res.json(result[0]);
@@ -243,13 +243,14 @@ exports.getRecentArticles = (req, res) => {
 
 //Get Article Onebyone
 exports.oneArticle = (req, res) => {
-  Article.findOne({
-    where: {
-      id: req.params.id,
-    },
-  }).then((result) => {
-    res.status(200).send(result);
-  });
+  Article.sequelize
+    .query(
+      `SELECT id, name, description, recommends, oppositions, browingcount, 
+      (SELECT currentAvatarId FROM users WHERE users.id=articles.userId) AS currentAvatarId FROM articles WHERE id=` + req.params.id
+    )
+    .then((result) => {
+      res.json(result[0][0]);
+    });
 };
 
 // Verify New Article

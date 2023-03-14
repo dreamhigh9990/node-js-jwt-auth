@@ -77,17 +77,11 @@ exports.findTopUser = (req, res) => {
   //     // console.log("------------------------>",result)
   //     res.json(result)
   //   });
-
-  // Article.sequelize.query(`SELECT *
-  //                          FROM articles
-  //                          LEFT JOIN users ON users.id = articles.userId
-  //                         WHERE browingcount IN (SELECT MAX(browingcount) FROM articles)
-  //                         `).then((result) => { res.json(result) })
   Article.sequelize.query(
-      `SELECT id, username, (SELECT SUM(recommends) FROM articles WHERE articles.userId=users.id) AS total_recommends FROM users ORDER BY total_recommends DESC LIMIT 2                       `
+      `SELECT id, username, (SELECT SUM(recommends) FROM articles WHERE articles.userId=users.id) AS total_recommends FROM users ORDER BY total_recommends DESC LIMIT 4                       `
     )
     .then((result) => {
-      res.json(result);
+      res.json(result[0]);
     });
 };
 
@@ -123,25 +117,30 @@ exports.findAll = (req, res) => {
 
 // Get the articles for a given category
 exports.findArticleCategoryById = (req, res) => {
-  return ArticleCategory.findByPk(req.params.id, {
-    include: ["articles"],
-  }).then((articlecategories) => {
-    // res.json(category)
-    res.status(200).send(articlecategories);
+  Article.sequelize
+  .query(
+    `SELECT id, name, DESCRIPTION,recommends,oppositions,(SELECT title FROM articlecategories WHERE articlecategories.id=articles.articleCategoryId) AS categoryTitle,
+(SELECT username FROM users WHERE users.id=articles.userId) AS username,(SELECT currentAvatarId FROM users WHERE users.id=articles.userId) AS currentAvatarId, 
+createdAt FROM articles WHERE articleCategoryId=` + req.params.id
+  )
+  .then((result) => {
+    console.log("query_category_id", result);
+    res.json(result[0]);
   });
 };
 
 // Get the article for a given article id
 exports.findArticleById = (req, res) => {
-  return Article.findByPk(req.params.id, {
-    include: ["articleCategory", "user"],
-  })
-    .then((article) => {
-      res.json(article);
-    })
-    .catch((err) => {
-      console.log(">> Error while finding article: ", err);
-    });
+  Article.sequelize
+  .query(
+    `SELECT id, name, DESCRIPTION,recommends,oppositions,(SELECT title FROM articlecategories WHERE articlecategories.id=articles.articleCategoryId) AS categoryTitle,
+(SELECT username FROM users WHERE users.id=articles.userId) AS username,(SELECT currentAvatarId FROM users WHERE users.id=articles.userId) AS currentAvatarId, 
+createdAt FROM articles WHERE userId=` + req.params.id
+  )
+  .then((result) => {
+    console.log("query_userId", result);
+    res.json(result[0]);
+  });
 };
 
 //Get All Categories
@@ -208,9 +207,17 @@ exports.deleteCategory = async (req, res) => {
 
 // Get All Articles
 exports.allArticle = (req, res) => {
-  Article.findAll({}).then((result) => {
-    res.status(200).send(result);
-  });
+  Article.sequelize
+    .query(
+      `SELECT id, name,(SELECT username FROM users WHERE users.id=articles.userId) AS username, 
+      (SELECT currentAvatarId FROM users WHERE users.id=articles.userId) AS currentAvatarId, 
+      (SELECT title FROM articlecategories WHERE articlecategories.id=articles.articleCategoryId) AS categoryTitle, 
+      DESCRIPTION, recommends, oppositions, createdAt FROM articles order by recommends
+      `
+    )
+    .then((result) => {
+      res.json(result[0]);
+    });
 };
 
 //Get Article Onebyone

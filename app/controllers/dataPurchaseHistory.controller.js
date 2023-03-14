@@ -43,6 +43,9 @@ exports.findDataPurchaseHistoyById = (req, res) => {
 //Get All DataPurchaseHistories
 exports.getAllDataPurchaseHistories = (req, res) => {
     DataPurchaseHistory.findAll({
+        where: {
+            voterId: req.params.id
+        }
     }).then(result => {
         res.status(200).send(result);
     });
@@ -61,22 +64,23 @@ exports.getOneDataPurchaseHistory = (req, res) => {
 }
 
 //Create New DataPurchaseHistory
-exports.createDataPurchaseHistory = (req, res) => {
+exports.createDataPurchaseHistory = async (req, res) => {
     //save new DataPurchaseHistory to database
     DataPurchaseHistory.create({
         categoryId: req.body.categoryId,
         userId: req.body.userId,
         username: req.body.username,
-        dataId: req.body.categoryId,    
-        dataname: req.body.categoryId,
+        dataId: req.body.dataId,
+        dataname: req.body.dataname,
         voterId: req.body.voterId,
+        votedate: req.body.votedate,
     })
-        .then(result => {
-            res.status(200).send(result);
-        })
-        .catch(err => {
-            res.status(500).send({ message: err.message });
-        });
+    .then(result => {
+        res.status(200).send(result);
+    })
+    .catch(err => {
+        res.status(500).send({ message: err.message });
+    });
 };
 
 // Delete DataPurchaseHistory

@@ -1,12 +1,12 @@
 const db = require("../models");
-PassedTest = db.passedTest
+TestPurchaseHistory = db.testPurchaseHistory
 BrowseHistory = db.browseHistory
 User = db.user
 
 
 // Get the browseHistories for a given user
-exports.findPassedTestById = (req, res) => {
-    PassedTest.findAll({
+exports.findTestPurchaseHistoryById = (req, res) => {
+    TestPurchaseHistory.findAll({
         where: { userId: req.params.id }
     }
     )
@@ -17,15 +17,13 @@ exports.findPassedTestById = (req, res) => {
 
 
 //Create New passed history
-exports.createPassedTest = (req, res) => {
+exports.createTestPurchaseHistory = (req, res) => {
     //save new passed history to database
-    PassedTest.create({
-        date: req.body.date,
-        total: req.body.total,
-        status: req.body.status,
-        matched: req.body.matched,
+    TestPurchaseHistory.create({
         userId: req.body.userId,
-        level: req.body.level
+        date: req.body.date,
+        level: req.body.level,
+        price: req.body.price,
     })
         .then(result => {
             res.status(200).send(result);
@@ -35,15 +33,13 @@ exports.createPassedTest = (req, res) => {
         });
 };
 
-// Update PassedTest
-exports.updatePassedTest = (req, res) => {
-    PassedTest.update({
-        date: req.body.date,
-        total: req.body.total,
-        status: req.body.status,
-        matched: req.body.matched,
+// Update TestPurchaseHistory
+exports.updateTestPurchaseHistory = (req, res) => {
+    TestPurchaseHistory.update({
         userId: req.body.userId,
-        level: req.body.level
+        date: req.body.date,
+        level: req.body.level,
+        price: req.body.price,
     },
       {
         where: {
@@ -53,3 +49,4 @@ exports.updatePassedTest = (req, res) => {
         res.status(200).send(result);
       });
   };
+

@@ -205,14 +205,35 @@ exports.deleteCategory = async (req, res) => {
   }
 };
 
-// Get All Articles
-exports.allArticle = (req, res) => {
+//Get All Articles
+exports.getAllArticles = (req, res) => {
+  Article.findAll({}).then((result) => {
+    res.status(200).send(result);
+  });
+};
+
+exports.getTrendingArticles = (req, res) => {
   Article.sequelize
     .query(
       `SELECT id, name,(SELECT username FROM users WHERE users.id=articles.userId) AS username, 
       (SELECT currentAvatarId FROM users WHERE users.id=articles.userId) AS currentAvatarId, 
       (SELECT title FROM articlecategories WHERE articlecategories.id=articles.articleCategoryId) AS categoryTitle, 
-      DESCRIPTION, recommends, oppositions, createdAt FROM articles order by recommends
+      DESCRIPTION, recommends, oppositions, createdAt, articleCategoryId FROM articles order by recommends limit 10
+      `
+    )
+    .then((result) => {
+      res.json(result[0]);
+    });
+};
+
+// Get All Articles
+exports.getRecentArticles = (req, res) => {
+  Article.sequelize
+    .query(
+      `SELECT id, name,(SELECT username FROM users WHERE users.id=articles.userId) AS username, 
+      (SELECT currentAvatarId FROM users WHERE users.id=articles.userId) AS currentAvatarId, 
+      (SELECT title FROM articlecategories WHERE articlecategories.id=articles.articleCategoryId) AS categoryTitle, 
+      DESCRIPTION, recommends, oppositions, createdAt, articleCategoryId FROM articles order by createdAt
       `
     )
     .then((result) => {
@@ -249,6 +270,7 @@ exports.createArticle = (req, res) => {
     recommends: req.body.recommends,
     oppositions: req.body.oppositions,
     browingcount: req.body.browingcount,
+    userId: req.body.userId
     // category: req.body.category
   })
     .then((result) => {

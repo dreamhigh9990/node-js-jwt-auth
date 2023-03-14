@@ -89,7 +89,7 @@ exports.downloadById = (req, res) => {
     .then(result => {
       if (!result) {
         res.status(500).send({
-          message: "Could not download the file. " + err,
+          message: "Could not download the file.",
         });
       } else {
         if ( result.file_url !== null) {
@@ -103,7 +103,7 @@ exports.downloadById = (req, res) => {
           });
         } else {
           res.status(500).send({
-            message: "Could not download the file. " + err,
+            message: "Could not download the file.",
           });
         }
       }

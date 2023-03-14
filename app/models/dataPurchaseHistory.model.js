@@ -1,4 +1,4 @@
-module.exports = (sequelize, DataTypes) => {
+module.exports = (sequelize, Sequelize) => {
   const DataPurchaseHistory = sequelize.define("dataPurchaseHistories", {
     categoryId: {
       type: Sequelize.INTEGER

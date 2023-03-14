@@ -1,13 +1,13 @@
-module.exports = (sequelize, DataTypes) => {
+module.exports = (sequelize, Sequelize) => {
   const TestPurchaseHistory = sequelize.define("testPurchaseHistories", {
     userId: {
-      type: DataTypes.INTEGER
+      type: Sequelize.INTEGER
     },
     level: {
-      type: DataTypes.STRING
+      type: Sequelize.STRING
     },
     price: {
-      type: DataTypes.INTEGER
+      type: Sequelize.INTEGER
     },
   });
 

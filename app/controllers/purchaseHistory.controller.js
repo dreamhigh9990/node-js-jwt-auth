@@ -22,12 +22,19 @@ exports.findUserById = (req, res) => {
 
 // Get the PurchaseHistories for a given purchaseHistory id
 exports.findPurchaseHistoyById = (req, res) => {
-    PurchaseHistory.findAll({
-        where: { userId: req.params.id, type: req.body.type}
-    }).then((histories) => {
-        // res.json(user)
-        res.status(200).send(histories);
-    });
+    if (req.body.type) {
+        PurchaseHistory.findAll({
+            where: { userId: req.params.id, type: req.body.type}
+        }).then((histories) => {
+            res.status(200).send(histories);
+        });
+    } else {
+        PurchaseHistory.findAll({
+            where: { userId: req.params.id}
+        }).then((histories) => {
+            res.status(200).send(histories);
+        });
+    }
 };
 
 

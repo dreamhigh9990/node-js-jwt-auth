@@ -1,4 +1,6 @@
 const db = require("../models");
+const uploadFile = require("../middleware/upload");
+
 GoodData = db.gooddata
 DataCategory = db.dataCategory
   
@@ -107,22 +109,25 @@ exports.allData = (req, res) => {
 
 //Get Program Onebyone
 exports.oneData = (req, res) => {
-    GoodData.findOne({
-      where: {
-        id: req.params.id
-      }
-    })
-    .then(result => {
-      res.status(200).send(result)
-    })
-  }
+  GoodData.findOne({
+    where: {
+      id: req.params.id
+    }
+  })
+  .then(result => {
+    res.status(200).send(result)
+  })
+}
 
 // Create New GoodData
 exports.createData = async (req, res) => {
-  // Save GoodData to Database
+  req.tailPath = "data/gooddata"
   req.dateNow = Date.now()
+
   try {
     await uploadFile(req, res);
+    console.log("req", req);
+    // Save Media to Database
     GoodData.create({
       name: req.body.name,
       image_url: req.dateNow + req.file.originalname,
@@ -144,14 +149,15 @@ exports.createData = async (req, res) => {
       factory: req.body.factory,
       location: req.body.location,
       status: req.body.status,
+      voterId: req.body.voterId,
     })
-    .then(result => {
+      .then(result => {
         res.status(200).send(result);
-    })
-    .catch(err => {
+      })
+      .catch(err => {
         res.status(500).send({ message: err.message });
-    });
-  } catch (err) {
+      });
+    } catch (err) {
     console.log(err);
 
     if (err.code == "LIMIT_FILE_SIZE") {
@@ -168,53 +174,57 @@ exports.createData = async (req, res) => {
 
 // Update GoodData
 exports.updateData = (req, res) => {
-    GoodData.update(
-        {
-          name: req.body.name,
-          file_url: req.body.file_url,
-          data_type: req.body.data_type,
-          amount: req.body.amount,
-          unit: req.body.unit,
-          type: req.body.type,
-          port: req.body.port,
-          date: req.body.date,
-          price: req.body.price,
-          from: req.body.from,
-          to: req.body.to,
-          owner: req.body.owner,
-          runner: req.body.runner,
-          total_weight: req.body.total_weight,
-          load_weight: req.body.load_weight,
-          weight: req.body.weight,
-          current_height: req.body.current_height,
-          width: req.body.width,
-          length: req.body.length,
-          full_load: req.body.full_load,
-          engine: req.body.engine,
-          created: req.body.created,
-          factory: req.body.factory,
-          location: req.body.location,
-          status: req.body.status
+  GoodData.update(
+    {
+    name: req.body.name,
+    image_url: req.body.image_url,
+    plan_date: req.body.plan_date,
+    type: req.body.type,
+    port: req.body.port,
+    price: req.body.price,
+    owner: req.body.owner,
+    runner: req.body.runner,
+    total_weight: req.body.total_weight,
+    load_weight: req.body.load_weight,
+    weight: req.body.weight,
+    current_height: req.body.current_height,
+    width: req.body.width,
+    length: req.body.length,
+    full_load: req.body.full_load,
+    engine: req.body.engine,
+    built_date: req.body.built_date,
+    factory: req.body.factory,
+    location: req.body.location,
+    status: req.body.status,
+    }, {
+    where: {
+        id: req.params.id
+    },
+  }).then(result => {
+      res.status(200).send(result);
+  });
+};
 
-            // name: req.body.name,
-            // file_url: req.body.file_url,
-            // data_type: req.body.data_type,
-            // amount: req.body.amount,
-            // unit: req.body.unit,
-            // specification: req.body.specification,
-            // purpose: req.body.purpose,
-            // prediction_date: req.body.prediction_date,
-            // datacol: req.body.datacol,
-            // from: req.body.from,
-            // to: req.body.to,
-            // browses: req.body.browses
-        }, {
-        where: {
-            id: req.params.id
-        },
-    }).then(result => {
-        res.status(200).send(result);
-    });
+exports.downloadGoodImageById = (req, res) => {
+  const directoryPath = __basedir + "/resources/static/assets/uploads/data/gooddata/";
+
+  GoodData.findOne({
+    where: {
+      id: req.params.id
+    }
+  })
+    .then(result => {
+      var fileName = '';
+      if(result.image_url) fileName = result.image_url;
+      res.download(directoryPath + fileName, fileName, (err) => {
+        if (err) {
+          res.status(500).send({
+            message: "Could not download the file. " + err,
+          });
+        }
+      });
+      // res.status(200).send(result)
+    })
 };
 
 // Delete GoodData

@@ -94,6 +94,28 @@ exports.deleteCategory = async (req, res) => {
   }
 };
 
+exports.downloadLoadImageById = (req, res) => {
+  const directoryPath = __basedir + "/resources/static/assets/uploads/data/loaddata/";
+
+  LoadData.findOne({
+    where: {
+      id: req.params.id
+    }
+  })
+    .then(result => {
+      var fileName = '';
+      if(result.image_url) fileName = result.image_url;
+      res.download(directoryPath + fileName, fileName, (err) => {
+        if (err) {
+          res.status(500).send({
+            message: "Could not download the file. " + err,
+          });
+        }
+      });
+      // res.status(200).send(result)
+    })
+};
+
 
 
 
@@ -120,7 +142,8 @@ exports.oneData = (req, res) => {
 // Create New LoadData
 exports.createData = async (req, res) => {
   // Save LoadData to Database
-  req.dateNow = Date.now()
+  req.tailPath = "data/loaddata";
+  req.dateNow = Date.now();
   try {
     await uploadFile(req, res);
     LoadData.create({
@@ -161,7 +184,7 @@ exports.createData = async (req, res) => {
     }
 
     res.status(500).send({
-      message: `Could not upload the file: ${req.file.originalname}. ${err}`,
+      // message: `Could not upload the file: ${req.file.originalname}. ${err}`,
     });
   }
 };

@@ -126,6 +126,7 @@ exports.createData = async (req, res) => {
 
   try {
     await uploadFile(req, res);
+    console.log("req", req);
     // Save Media to Database
     ShipData.create({
       name: req.body.name,
@@ -148,6 +149,7 @@ exports.createData = async (req, res) => {
       factory: req.body.factory,
       location: req.body.location,
       status: req.body.status,
+      voterId: req.body.voterId,
     })
       .then(result => {
         res.status(200).send(result);
@@ -155,7 +157,7 @@ exports.createData = async (req, res) => {
       .catch(err => {
         res.status(500).send({ message: err.message });
       });
-  } catch (err) {
+    } catch (err) {
     console.log(err);
 
     if (err.code == "LIMIT_FILE_SIZE") {

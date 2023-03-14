@@ -77,4 +77,9 @@ module.exports = function (app) {
         "/api/gooddata/delete/:id",
         controller.deleteData
     );
+    
+    app.get(
+        "/api/gooddata/fileById/:id",
+        controller.downloadGoodImageById
+    );
 };

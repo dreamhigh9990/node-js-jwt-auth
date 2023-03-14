@@ -78,13 +78,23 @@ module.exports = function (app) {
 
     app.get(
         "/api/article/get_All",
-        controller.allArticle
+        controller.getAllArticles
+    );
+
+    app.get(
+        "/api/article/get_trending_articles",
+        controller.getTrendingArticles
     )
+
+    app.get(
+        "/api/article/get_recent_articles",
+        controller.getRecentArticles
+    );
 
     app.get(
         "/api/article/get_one/:id",
         controller.oneArticle
-    )
+    );
 
     app.post(
         "/api/article/verify",

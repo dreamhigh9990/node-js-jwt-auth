@@ -45,7 +45,9 @@ db.dataCategory = require("../models/dataCategory.model")(sequelize, Sequelize);
 db.campusCategory = require("../models/campusCategory.model")(sequelize, Sequelize);
 db.comment = require("../models/comment.model")(sequelize, Sequelize);
 
+db.purchaseHistory = require("../models/purchaseHistory.model")(sequelize, Sequelize);
 db.dataPurchaseHistory = require("../models/dataPurchaseHistory.model")(sequelize, Sequelize);
+db.testPurchaseHistory = require("../models/testPurchaseHistory.model")(sequelize, Sequelize);
 db.browseHistory = require("../models/browseHistroy.model")(sequelize, Sequelize);
 db.question = require("../models/question.model")(sequelize, Sequelize);
 db.answer = require("../models/answer.model")(sequelize, Sequelize);
@@ -121,6 +123,13 @@ db.dataPurchaseHistory.belongsTo(db.user, {
   foreignKey: "userId",
   as: "user",
 });
+
+db.user.hasMany(db.testPurchaseHistory, {as: "testPurchaseHistories"});
+db.testPurchaseHistory.belongsTo(db.user, {
+  foreignKey: "userId",
+  as: "user"
+})
+
 // db.data.hasMany(db.dataPurchaseHistory, { as: "dataPurchaseHistory" });
 // db.dataPurchaseHistory.belongsTo(db.data, {
 //   foreignKey: "dataId",
@@ -156,5 +165,11 @@ db.question.hasMany(db.answer, { as: "answers" });
 db.answer.belongsTo(db.question, {
   foreignKey: "questionId",
   as: "question",
+});
+
+db.user.hasMany(db.purchaseHistory, { as: "purchaseHistories" });
+db.purchaseHistory.belongsTo(db.user, {
+  foreignKey: "userId",
+  as: "user",
 });
 module.exports = db;

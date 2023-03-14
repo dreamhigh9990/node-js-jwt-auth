@@ -45,7 +45,7 @@ module.exports = function (app) {
     );
 
     app.get(
-        "/api/article/findArticleById/:id",
+        "/api/article/get_one_by_userId/:id",
         controller.findArticleById
     );
 

@@ -22,21 +22,6 @@ exports.findUserById = (req, res) => {
 
 // Get the dataPurchaseHistories for a given dataPurchaseHistory id
 exports.findDataPurchaseHistoyById = (req, res) => {
-    console.log("dddddddd", req.body.type);
-    // return DataPurchaseHistory.findByPk(req.params.id, { include: ["user", "data"], })
-    //     .then((history) => {
-    //         res.json(history)
-    //     })
-    //     .catch((err) => {
-    //         console.log(">> Error while finding program: ", err);
-    //     });
-        // return user.findByPk(req.params.id, { include: ["user", "data", "dataPurchaseHistory"], })
-        // .then((history) => {
-        //     res.json(history)
-        // })
-        // .catch((err) => {
-        //     console.log(">> Error while finding program: ", err);
-        // });
         DataPurchaseHistory.findAll({
             include: [
                 {
